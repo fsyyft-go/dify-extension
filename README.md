@@ -1,5 +1,9 @@
 # Dify 扩展
 
+## 示例
+
+在 Dify 导入 [DSL](./configs/dify.extension.demo.yml) 可以直接尝试。
+
 ## 调试
 
 ### `ping`
@@ -51,3 +55,7 @@ curl -X POST 'http://127.0.0.1:44444/dify' -H 'Content-Type: application/json' -
 ### 视频
 
 - [Dify 外部数据工具 Function Call => External data tool](https://www.bilibili.com/video/BV1UN4y1b7s1/)
+
+### 工具
+
+- [Reqable = Fiddler + Charles + Postman](https://reqable.com/zh-CN)
