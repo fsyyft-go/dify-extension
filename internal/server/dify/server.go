@@ -5,7 +5,9 @@
 package dify
 
 import (
+	"bytes"
 	"encoding/json"
+	"io"
 	"net/http"
 
 	kitlog "github.com/fsyyft-go/kit/log"
@@ -13,9 +15,30 @@ import (
 	appconf "github.com/fsyyft-go/dify-extension/internal/conf"
 )
 
+const (
+	pointPing    = "ping"
+	choiceFoods  = "foods"
+	choiceDrinks = "drinks"
+
+	resultPing   = "pong"
+	resultFoods  = "apple,banana,orange,grape,watermelon,kiwi,peach,pear,pineapple,lemon,mango,blueberry,raspberry,blackberry,grapefruit,apricot,avocado,coconut,fig,guava,lychee,olive,papaya,passion fruit,pomegranate,star fruit,dragon fruit,plum"
+	resultDrinks = "coffee,tea,juice,water,milk,beer,wine,whiskey,rum,vodka,gin,brandy,tequila,coke,pepsi,sprite,7up,fanta,red bull,monster"
+)
+
 type (
+	requestInput struct {
+		Choice string `json:"choice"`
+	}
+
+	requestParams struct {
+		AppID        string       `json:"app_id"`
+		ToolVariable string       `json:"tool_variable"`
+		Inputs       requestInput `json:"inputs"`
+		Query        string       `json:"query"`
+	}
 	requestData struct {
-		Point string `json:"point"`
+		Point  string        `json:"point"`
+		Params requestParams `json:"params"`
 	}
 	responseData struct {
 		Result string `json:"result"`
@@ -55,15 +78,51 @@ func (s *server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	req := requestData{}
 	resp := responseData{}
 
+	l := s.logger
+
+	// 读取请求体内容。
+	body, err := io.ReadAll(r.Body)
+	if err != nil {
+		s.logger.Error("读取请求体失败", "error", err)
+		goto END
+	}
+	// 重新设置请求体，供后续使用。
+	r.Body = io.NopCloser(bytes.NewBuffer(body))
+
 	if errDecoder := json.NewDecoder(r.Body).Decode(&req); errDecoder != nil {
 		s.logger.Error("failed to decode request body", "error", errDecoder)
 		err = errDecoder
 		goto END
 	}
-	switch req.Point {
-	case "ping":
-		resp.Result = "pong"
+
+	l = l.WithField("point", req.Point)
+	if len(req.Params.AppID) > 0 {
+		l = l.WithField("app_id", req.Params.AppID)
 	}
+	if len(req.Params.ToolVariable) > 0 {
+		l = l.WithField("tool_variable", req.Params.ToolVariable)
+	}
+	if len(req.Params.Query) > 0 {
+		l = l.WithField("query", req.Params.Query)
+	}
+	if len(req.Params.Inputs.Choice) > 0 {
+		l = l.WithField("choice", req.Params.Inputs.Choice)
+	}
+
+	switch req.Point {
+	case pointPing:
+		resp.Result = resultPing
+	default:
+		switch req.Params.Inputs.Choice {
+		case choiceFoods:
+			resp.Result = resultFoods
+		case choiceDrinks:
+			resp.Result = resultDrinks
+		}
+	}
+
+	l.Info(resp.Result)
+
 END:
 	if err != nil {
 		resp.Result = err.Error()
