@@ -1,0 +1,205 @@
+# Dify 应用配置文件，定义了一个食物推荐器应用。
+app:
+  # 应用的描述信息，说明应用的主要功能和使用前提。
+  description: 使用自定义扩展实现的食物推荐器，使用前需要先把扩展服务启动。
+  # 应用图标名称，使用 watermelon（西瓜）作为图标。
+  icon: watermelon
+  # 图标的背景颜色，使用十六进制颜色代码。
+  icon_background: '#FFEAD5'
+  # 应用模式，设置为 chat（聊天）模式。
+  mode: chat
+  # 应用名称。
+  name: 食物推荐器
+  # 是否使用应用图标作为回答图标，设置为 false。
+  use_icon_as_answer_icon: false
+
+# 应用依赖配置。
+dependencies:
+# 当前依赖项配置。
+- current_identifier: null
+  # 依赖类型，设置为 marketplace（市场）。
+  type: marketplace
+  # 依赖值配置。
+  value:
+    # 市场插件的唯一标识符，包含版本号和哈希值。
+    marketplace_plugin_unique_identifier: langgenius/openai_api_compatible:0.0.8@f21552fa7132a760e81ba58a585e7f42edd408ba37a5d5d6669e43886007e362
+
+# 配置文件类型。
+kind: app
+
+# 模型配置部分。
+model_config:
+  # 代理模式配置。
+  agent_mode:
+    # 是否启用代理模式。
+    enabled: false
+    # 最大迭代次数。
+    max_iteration: 5
+    # 策略类型，使用 react 策略。
+    strategy: react
+    # 工具列表，当前为空。
+    tools: []
+
+  # 注释回复配置。
+  annotation_reply:
+    # 是否启用注释回复。
+    enabled: false
+
+  # 聊天提示配置，当前为空对象。
+  chat_prompt_config: {}
+
+  # 完成提示配置，当前为空对象。
+  completion_prompt_config: {}
+
+  # 数据集配置。
+  dataset_configs:
+    # 数据集列表配置。
+    datasets:
+      # 数据集列表，当前为空。
+      datasets: []
+    # 是否启用重排序。
+    reranking_enable: false
+    # 检索模型类型，设置为 multiple。
+    retrieval_model: multiple
+    # 返回结果的数量限制。
+    top_k: 4
+
+  # 数据集查询变量，当前为空。
+  dataset_query_variable: ''
+
+  # 外部数据工具列表，当前为空。
+  external_data_tools: []
+
+  # 文件上传配置。
+  file_upload:
+    # 允许的文件扩展名列表。
+    allowed_file_extensions:
+    - .JPG
+    - .JPEG
+    - .PNG
+    - .GIF
+    - .WEBP
+    - .SVG
+    - .MP4
+    - .MOV
+    - .MPEG
+    - .MPGA
+    # 允许的文件类型列表，当前为空。
+    allowed_file_types: []
+    # 允许的文件上传方式。
+    allowed_file_upload_methods:
+    - remote_url
+    - local_file
+    # 是否启用文件上传。
+    enabled: false
+    # 图片相关配置。
+    image:
+      # 图片细节级别。
+      detail: high
+      # 是否启用图片功能。
+      enabled: false
+      # 图片数量限制。
+      number_limits: 3
+      # 图片传输方式。
+      transfer_methods:
+      - remote_url
+      - local_file
+    # 文件数量限制。
+    number_limits: 3
+
+  # 模型配置。
+  model:
+    # 完成参数配置。
+    completion_params:
+      # 停止标记列表，当前为空。
+      stop: []
+    # 模型模式，设置为 chat。
+    mode: chat
+    # 模型名称。
+    name: deepseek-v3
+    # 模型提供者。
+    provider: langgenius/openai_api_compatible/openai_api_compatible
+
+  # 相似内容推荐配置。
+  more_like_this:
+    # 是否启用相似内容推荐。
+    enabled: false
+
+  # 开场白，当前为空。
+  opening_statement: ''
+
+  # 预设提示语，用于根据食物列表和用户选择提供推荐。
+  pre_prompt: 请根据 {{food_list}} 中提供的内容与用户 {{choice}}，提供今日的推荐食谱。
+
+  # 提示类型，设置为 simple。
+  prompt_type: simple
+
+  # 检索资源配置。
+  retriever_resource:
+    # 是否启用检索资源。
+    enabled: true
+
+  # 敏感词回避配置。
+  sensitive_word_avoidance:
+    # 敏感词配置列表，当前为空。
+    configs: []
+    # 是否启用敏感词回避。
+    enabled: false
+    # 敏感词类型，当前为空。
+    type: ''
+
+  # 语音转文字配置。
+  speech_to_text:
+    # 是否启用语音转文字。
+    enabled: false
+
+  # 建议问题列表，当前为空。
+  suggested_questions: []
+
+  # 回答后的建议问题配置。
+  suggested_questions_after_answer:
+    # 是否启用回答后的建议问题。
+    enabled: false
+
+  # 文字转语音配置。
+  text_to_speech:
+    # 是否启用文字转语音。
+    enabled: false
+    # 语言设置，当前为空。
+    language: ''
+    # 语音设置，当前为空。
+    voice: ''
+
+  # 用户输入表单配置。
+  user_input_form:
+  # 外部数据工具配置。
+  - external_data_tool:
+      # API 配置。
+      config:
+        # API 扩展 ID。
+        api_based_extension_id: 651a9eef-2789-41fc-a95d-3bb72fd82742
+      # 标签名称。
+      label: 测试扩展
+      # 是否必填。
+      required: true
+      # 类型为 API。
+      type: api
+      # 变量名。
+      variable: food_list
+  # 选择框配置。
+  - select:
+      # 默认值，当前为空。
+      default: ''
+      # 标签名称。
+      label: 食物类型
+      # 选项列表。
+      options:
+      - foods
+      - drinks
+      # 是否必填。
+      required: true
+      # 变量名。
+      variable: choice
+
+# 配置文件版本号。
+version: 0.1.5
