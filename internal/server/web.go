@@ -19,6 +19,7 @@ import (
 
 	apphelloworldv1 "github.com/fsyyft-go/dify-extension/api/helloworld/v1"
 	appconf "github.com/fsyyft-go/dify-extension/internal/conf"
+	appdify "github.com/fsyyft-go/dify-extension/internal/server/dify"
 )
 
 var (
@@ -81,6 +82,11 @@ func NewWebServer(logger kitlog.Logger, conf *appconf.Config,
 	// 将 Kratos HTTP 服务解析到 Gin 引擎中。
 	kitkratostransporthttp.Parse(server, webServer.engine)
 
+	difyserver := appdify.New(logger, conf)
+	webServer.engine.POST("/dify", gin.HandlerFunc(func(c *gin.Context) {
+		difyserver.ServeHTTP(c.Writer, c.Request)
+	}))
+
 	var cleanup = func() {}
 
 	return webServer, cleanup, err
@@ -107,7 +113,7 @@ func (s *webServer) Start(_ context.Context) error {
 // 返回值：
 //   - error：停止过程中可能发生的错误。
 func (s *webServer) Stop(_ context.Context) error {
-	panic("unimplemented")
+	return nil
 }
 
 // Engine 返回 Gin 引擎实例。
@@ -115,7 +121,7 @@ func (s *webServer) Stop(_ context.Context) error {
 // 返回值：
 //   - *gin.Engine：配置好的 Gin 引擎实例。
 func (s *webServer) Engine() *gin.Engine {
-	panic("unimplemented")
+	return s.engine
 }
 
 // validateCallback 处理请求验证失败的回调函数。
