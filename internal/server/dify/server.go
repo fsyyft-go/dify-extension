@@ -7,6 +7,7 @@ package dify
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"io"
 	"net/http"
 
@@ -29,6 +30,10 @@ const (
 	resultFoods = "apple,banana,orange,grape,watermelon,kiwi,peach,pear,pineapple,lemon,mango,blueberry,raspberry,blackberry,grapefruit,apricot,avocado,coconut,fig,guava,lychee,olive,papaya,passion fruit,pomegranate,star fruit,dragon fruit,plum"
 	// 饮品列表的预设响应结果，包含多种饮品名称，以逗号分隔。
 	resultDrinks = "coffee,tea,juice,water,milk,beer,wine,whiskey,rum,vodka,gin,brandy,tequila,coke,pepsi,sprite,7up,fanta,red bull,monster"
+)
+
+var (
+	apikey = "f513e140-b10d-4075-98ad-4f75b41d7c3e"
 )
 
 type (
@@ -104,19 +109,36 @@ func (s *server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	// 获取基础日志记录器。
 	l := s.logger
+	// 获取 Authorization 头部值，可能包含多个值。
+	authHeaders := r.Header["Authorization"]
+	authorized := false
+	bearer := fmt.Sprintf("Bearer %s", apikey)
 
 	// 读取请求体内容。
 	body, err := io.ReadAll(r.Body)
 	if err != nil {
-		s.logger.Error("读取请求体失败", "error", err)
+		l.Error("读取请求体失败", "error", err)
 		goto END
 	}
 	// 重新设置请求体，供后续使用。
 	r.Body = io.NopCloser(bytes.NewBuffer(body))
 
+	// 遍历所有 Authorization 值，检查是否有匹配的 apikey。
+	for _, auth := range authHeaders {
+		if auth == bearer {
+			authorized = true
+			break
+		}
+	}
+	if !authorized {
+		err = fmt.Errorf("unauthorized")
+		l.Error("未授权")
+		goto END
+	}
+
 	// 解析请求体 JSON 数据。
 	if errDecoder := json.NewDecoder(r.Body).Decode(&req); errDecoder != nil {
-		s.logger.Error("解析请求体 JSON 失败", "error", errDecoder)
+		l.Error("解析请求体 JSON 失败", "error", errDecoder)
 		err = errDecoder
 		goto END
 	}

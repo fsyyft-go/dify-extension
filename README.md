@@ -17,7 +17,7 @@ curl -X POST 'http://127.0.0.1:44444/dify' -H 'Content-Type: application/json' -
 ### `foods`
 
 ```bash
-curl -X POST 'http://127.0.0.1:44444/dify' -H 'Content-Type: application/json' -d '{
+curl -X POST 'http://127.0.0.1:44444/dify' -H 'Content-Type: application/json' -H 'Authorization: Bearer f513e140-b10d-4075-98ad-4f75b41d7c3e' -d '{
   "point": "app.external_data_tool.query",
   "params": {
     "app_id": "93d5cc7a-5f61-4734-ba89-84706bbc8c97",
@@ -33,7 +33,7 @@ curl -X POST 'http://127.0.0.1:44444/dify' -H 'Content-Type: application/json' -
 ### `drinks`
 
 ```bash
-curl -X POST 'http://127.0.0.1:44444/dify' -H 'Content-Type: application/json' -d '{
+curl -X POST 'http://127.0.0.1:44444/dify' -H 'Content-Type: application/json' -H 'Authorization: Bearer f513e140-b10d-4075-98ad-4f75b41d7c3e' -d '{
   "point": "app.external_data_tool.query",
   "params": {
     "app_id": "93d5cc7a-5f61-4734-ba89-84706bbc8c97",
